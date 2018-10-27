@@ -1,9 +1,4 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-    <Demo/>
-  </div>
 </template>
 
 <script lang="ts">
@@ -13,8 +8,8 @@ import Demo from '@/components/demo.vue';
 
 @Component({
   components: {
-    HelloWorld,
-    Demo,
+    //HelloWorld,
+    //Demo,
   },
 })
 export default class Home extends Vue {}
