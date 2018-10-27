@@ -24,3 +24,5 @@ npm run test
 ```
 npm run lint
 ```
+1.在main.ts中引用全局ele文件
+2.在babel.config.js中配置ele的plugins
