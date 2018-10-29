@@ -14,7 +14,11 @@ export default Vue.extend({
     name:"user",
     data(){
         return{
-            users:[],
+            users:[
+                { realName: 'test',userName:'test',hours:8 },
+                { realName: 'songp',userName:'songp',hours:9 },
+                { realName: 'test2',userName:'test2',hours:10 }
+            ],
             day:"today"
         }
     },

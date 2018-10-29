@@ -56,7 +56,7 @@ export default Vue.extend({
     },
     data(){
       return {
-        userName:"songpeng"
+        userName:"songp"
       }
     },
     methods:{
