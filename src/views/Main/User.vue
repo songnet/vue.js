@@ -16,7 +16,7 @@
       </el-table>
       </el-card>
       <el-dialog title="新增用户" :visible.sync="dialogFormVisible">
-          <el-form>
+          <el-form :model="addForm" ref="addForm">
               <el-form-item label="成员" prop="realName">
           <el-input v-model="addForm.realName" auto-complete="off"></el-input>
         </el-form-item>
@@ -35,16 +35,12 @@
       </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
+import { Component, Vue } from "vue-property-decorator";
 export default Vue.extend({
     name:"user",
     data(){
         return{
-            users:[
-                { realName: 'test',userName:'test',hours:8 },
-                { realName: 'songp',userName:'songp',hours:9 },
-                { realName: 'test2',userName:'test2',hours:10 }
-            ],
+            users:[],
             dialogFormVisible:false,
             day:"today",
             addForm:{
@@ -54,17 +50,24 @@ export default Vue.extend({
             }
         }
     },
+    mounted(){
+    this.getUsers();
+    },
     methods:{
         getUsers(){
-
+            this.$http.get("/GetUsers").then(response => {
+            this.users = response.data;
+            });
         },
         hoursStyle(row,index){
             
         },
         addProject(model){
+            console.log(model);
+            console.log(this.addForm);
             this.users.push(this.addForm);
             this.dialogFormVisible = false;
-            //this.$refs.addForm.resetFields();
+            this.$refs.addForm.resetFields();
         }
     }
 })

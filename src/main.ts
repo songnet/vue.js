@@ -6,6 +6,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from './App.vue';
 import router from './router';
 //import zhLocale from 'element-ui/lib/locale/lang/zh-CN'
+import axios from 'axios'
 
 Vue.config.productionTip = false;
 //使用ele,全局引用
@@ -13,6 +14,9 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 //Vue.use(zhLocale);
 
+Vue.prototype.$http = axios;
+//axios.defaults.baseURL = '/api'
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 new Vue({
   router,
