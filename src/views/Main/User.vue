@@ -63,11 +63,24 @@ export default Vue.extend({
             
         },
         addProject(model:any){
-            console.log(model);
-            console.log(this.addForm);
-            this.users.push((this.addForm));
-            this.dialogFormVisible = false;
-            this.$refs.addForm.resetFields();
+            this.$http
+            .post("/AddUser",this.addForm)
+            .then((response:any)=>{
+              this.dialogFormVisible = false;
+              this.$refs.addForm.resetFields();
+              this.getUsers();
+            }).catch((error:any)=>{
+                if(error.response){
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }else if(error.request){
+                    console.log(error.request);
+                }else{
+                    console.log("Error", error.message);
+                }
+                console.log(error.config);
+            });
         }
     }
 })
