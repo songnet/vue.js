@@ -15,7 +15,7 @@ Vue.use(ElementUI);
 //Vue.use(zhLocale);
 
 Vue.prototype.$http = axios;
-//axios.defaults.baseURL = '/api'
+//axios.defaults.baseURL = 'http://localhost:9002'
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 new Vue({

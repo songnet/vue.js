@@ -1,9 +1,15 @@
 module.exports = {
-  baseUrl: undefined,
-  outputDir: undefined,
-  assetsDir: undefined,
-  runtimeCompiler: undefined,
-  productionSourceMap: undefined,
-  parallel: undefined,
-  css: undefined
+  baseUrl: '/',
+  productionSourceMap: false,
+  devServer: {
+    proxy: {
+      '/': {
+        target: 'http://localhost:9002',// 请换成你的地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/': ''
+        }
+      }
+    }
+   }
 }

@@ -55,17 +55,17 @@ export default Vue.extend({
     },
     methods:{
         getUsers(){
-            this.$http.get("/GetUsers").then(response => {
+            this.$http.get("/GetUsers").then((response: any) => {
             this.users = response.data;
             });
         },
-        hoursStyle(row,index){
+        hoursStyle(row:string,index: string){
             
         },
-        addProject(model){
+        addProject(model:any){
             console.log(model);
             console.log(this.addForm);
-            this.users.push(this.addForm);
+            this.users.push((this.addForm));
             this.dialogFormVisible = false;
             this.$refs.addForm.resetFields();
         }
