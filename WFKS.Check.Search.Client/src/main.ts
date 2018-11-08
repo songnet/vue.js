@@ -3,6 +3,7 @@ import Vue from 'vue';
 //import VueI18n from 'vue-i18n'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import 'font-awesome/css/font-awesome.css'
 import App from './App.vue';
 import router from './router';
 //import zhLocale from 'element-ui/lib/locale/lang/zh-CN'

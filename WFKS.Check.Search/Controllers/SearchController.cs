@@ -19,52 +19,6 @@ namespace WFKS.Check.Search.Controllers
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="searchRequest"></param>
-        /// <returns></returns>
-        [HttpGet, Route("Get")]
-        [SwaggerOperation(operationId: "Get")]
-        [SwaggerResponse(statusCode: 200, type: typeof(List<SearchResponse>))]
-        public List<SearchResponse> Get([FromUri]SearchRequest searchRequest)
-        {
-            List<SearchResponse> list = new List<SearchResponse>();
-            List<Periodical> periodicalList = null;
-            string zz_xm = "%宋鹏%", qk_name = "%计算机%";
-            try
-            {
-                using (IDbConnection conn = new SQLBaseRepository().OpenConnection())
-                {
-                    periodicalList = conn.Query<Periodical>("select * from 期刊 where zz_xm like @zz_xm and qk_name like @qk_name and 有无版权 = '1' ", new { zz_xm, qk_name }).ToList();
-                }
-
-                if (periodicalList != null)
-                {
-                    foreach (var item in periodicalList)
-                    {
-                        list.Add(new SearchResponse()
-                        {
-                            Type = "qikan",
-                            CheckinID = item.CheckinID,
-                            Title = item.F_Title,
-                            TitleE = item.qk_engname,
-                            CreaterInfoZ = item.zz_xm,
-                            CreaterInfoE = item.zze_xm,
-                            Source = item.qk_name,
-                            f_code = item.f_qcode,
-                            YearIssueText = item.f_year + "年" + item.f_issue + "期"
-                        });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return list;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <returns></returns>
         [HttpGet, Route("GetUsers")]
         [SwaggerOperation(operationId: "GetUsers")]
@@ -77,5 +31,24 @@ namespace WFKS.Check.Search.Controllers
             return list;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost, Route("AddUser")]
+        [SwaggerOperation(operationId: "AddUser")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int))]
+        public int AddUser([FromBody]User user)
+        {
+            try
+            {
+                SQLiteDbHelper dbHelper = new SQLiteDbHelper();
+                return dbHelper.Add(user);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

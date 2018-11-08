@@ -3,7 +3,10 @@
     <el-card>
     <div slot="header" style="card-header">
     <span>项目</span>
-    <el-button type="primary" icon="el-icon-plus" size="mini" style="float:right;" @click="dialogFormVisible = true">
+    <el-button type="primary" size="mini" style="float:right;margin-right: 10px;" @click="getUsers()">
+          <i class="fa fa-refresh" style="width: 12px;"></i>
+    </el-button>
+    <el-button type="primary" icon="el-icon-plus" size="mini" style="float:right;margin-right:10px;" @click="dialogFormVisible = true">
     </el-button>
     </div>
     <el-table :data="users" :row-style="hoursStyle">
