@@ -24,5 +24,11 @@ npm run test
 ```
 npm run lint
 ```
+
+### tips
+```
 1.在main.ts中引用全局ele文件
 2.在babel.config.js中配置ele的plugins
+3.在vue.config.js中配置axios跨域
+4.
+```
