@@ -1,11 +1,9 @@
-﻿using Dapper;
+﻿using EntityFramework.Extensions;
 using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Web.Http;
-using WFKS.Check.Search.Common;
 using WFKS.Check.Search.Models;
 
 namespace WFKS.Check.Search.Controllers
@@ -16,6 +14,8 @@ namespace WFKS.Check.Search.Controllers
     public class SearchController : ApiController
     {
 
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().ReflectedType);
+
         /// <summary>
         /// 
         /// </summary>
@@ -25,10 +25,19 @@ namespace WFKS.Check.Search.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(List<User>))]
         public List<User> GetUsers()
         {
-            SQLiteDbHelper dbHelper = new SQLiteDbHelper();
-            var list = dbHelper.QueryMultiByWhere<User>("1=1");
-
-            return list;
+            using (var context = new UserContext())
+            {
+                try
+                {
+                    var list = context.User.ToList();
+                    return list;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("获取列表出错", ex);
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -40,14 +49,48 @@ namespace WFKS.Check.Search.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(int))]
         public int AddUser([FromBody]User user)
         {
-            try
+            using (var context = new UserContext())
             {
-                SQLiteDbHelper dbHelper = new SQLiteDbHelper();
-                return dbHelper.Add(user);
+                try
+                {
+                    context.User.Add(user);
+                    int count = context.SaveChanges();
+                    return count;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("AddUser出错", ex);
+                    throw;
+                }
             }
-            catch (Exception ex)
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost, Route("EditUser")]
+        [SwaggerOperation(operationId: "EditUser")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int))]
+        public int EditUser([FromBody]User user)
+        {
+            using (var context = new UserContext())
             {
-                throw ex;
+                try
+                {
+                    int count = context.User.Where(u => u.Id == user.Id).Update(u => new User
+                    {
+                        realName = user.realName,
+                        userName = user.userName,
+                        hours = user.hours
+                    });
+                    return count;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("EditUser出错", ex);
+                    throw;
+                }
             }
         }
     }

@@ -10,12 +10,21 @@
     </el-button>
     </div>
     <el-table :data="users" :row-style="hoursStyle">
-        <el-table-column prop="realName" label="成员">
+        <el-table-column  prop="realName" label="成员">
         </el-table-column>
         <el-table-column prop="userName" label="用户名">
         </el-table-column>
         <el-table-column prop="hours" label="工时">
         </el-table-column>
+        <el-table-column
+      fixed="right"
+      label="操作"
+      width="100">
+      <template slot-scope="scope">
+        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+        <el-button type="text" size="small">编辑</el-button>
+      </template>
+    </el-table-column>
       </el-table>
       </el-card>
       <el-dialog title="新增用户" :visible.sync="dialogFormVisible">
@@ -84,6 +93,9 @@ export default Vue.extend({
                 }
                 console.log(error.config);
             });
+        },
+        handleClick(model:any){
+        console.log(model);
         }
     }
 })
