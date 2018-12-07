@@ -45,6 +45,30 @@ namespace WFKS.Check.Search.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
+        [HttpGet, Route("GetUser")]
+        [SwaggerOperation(operationId: "GetUser")]
+        [SwaggerResponse(statusCode: 200, type: typeof(User))]
+        public User GetUser(int userId)
+        {
+            using (var context = new UserContext())
+            {
+                try
+                {
+                    var list = context.User.FirstOrDefault(u => u.Id == userId);
+                    return list;
+                }
+                catch (Exception ex)
+                {
+                    log.Error("获取列表出错", ex);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost, Route("AddUser")]
         [SwaggerOperation(operationId: "AddUser")]
         [SwaggerResponse(statusCode: 200, type: typeof(int))]
@@ -70,7 +94,7 @@ namespace WFKS.Check.Search.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [HttpPost, Route("EditUser")]
+        [HttpPut, Route("EditUser")]
         [SwaggerOperation(operationId: "EditUser")]
         [SwaggerResponse(statusCode: 200, type: typeof(int))]
         public int EditUser([FromBody]User user)

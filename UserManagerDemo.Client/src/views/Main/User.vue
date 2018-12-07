@@ -6,7 +6,7 @@
     <el-button type="primary" size="mini" style="float:right;margin-right: 10px;" @click="getUsers()">
           <i class="fa fa-refresh" style="width: 12px;"></i>
     </el-button>
-    <el-button type="primary" icon="el-icon-plus" size="mini" style="float:right;margin-right:10px;" @click="dialogFormVisible = true">
+    <el-button type="primary" icon="el-icon-plus" size="mini" @click="openaddForm()" style="float:right;margin-right:10px;">
     </el-button>
     </div>
     <el-table :data="users" :row-style="hoursStyle">
@@ -21,13 +21,13 @@
       label="操作"
       width="100">
       <template slot-scope="scope">
-        <el-button @click="editClick(scope.row)" type="text" size="small">编辑</el-button>
+        <el-button @click="openaddForm(scope.row)" type="text" size="small">编辑</el-button>
         <el-button @click="delClick(scope.row)" type="text" size="small">删除</el-button>
       </template>
     </el-table-column>
       </el-table>
       </el-card>
-      <el-dialog title="新增用户" :visible.sync="dialogFormVisible">
+      <el-dialog :title="{add: '新增用户', modify: '编辑用户'}[addForm.action]" :visible.sync="dialogFormVisible">
           <el-form :model="addForm" ref="addForm">
               <el-form-item label="成员" prop="realName">
           <el-input v-model="addForm.realName" auto-complete="off"></el-input>
@@ -41,7 +41,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addProject('addForm')">确 定</el-button>
+        <el-button type="primary" @click="saveUser()">确 定</el-button>
       </div>
       </el-dialog>
       </div>
@@ -57,6 +57,8 @@ export default Vue.extend({
             dialogFormVisible:false,
             day:"today",
             addForm:{
+                action:"add",
+                Id:"",
                 realName:"",
                 userName:"",
                 hours:""
@@ -77,29 +79,48 @@ export default Vue.extend({
         hoursStyle(row:string,index: string){
             
         },
-        addProject(model:any){
-            this.$http
-            .post("/AddUser",this.addForm)
-            .then((response:any)=>{
+        getuser() {
+      this.$http.get("/GetUser").then((response:any) => {
+        this.users = response.data;
+        if (this.users.length > 0 && !this.addForm.userId) {
+          this.addForm.userId = this.users[0].userId;
+        }
+      });
+    },
+        openaddForm(row:any) {
+      this.getuser();
+      if (!!row) {
+          console.log(row);
+        this.addForm.action = "modify";
+        this.addForm.Id = row.id;
+        this.addForm.realName = row.realName;;
+        this.addForm.userName = row.userName;
+        this.addForm.hours = row.hours
+      } else {
+console.log(row);
+        this.addForm.action = "add";
+      }
+      this.dialogFormVisible = true;
+    },
+saveUser() {
+          if (this.addForm.action == "add") {
+            this.$http.post("/AddUser", this.addForm).then(response => {
               this.dialogFormVisible = false;
               this.$refs.addForm.resetFields();
               this.getUsers();
-            }).catch((error:any)=>{
-                if(error.response){
-                    console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
-                }else if(error.request){
-                    console.log(error.request);
-                }else{
-                    console.log("Error", error.message);
-                }
-                console.log(error.config);
             });
-        },
-        editClick(model:any){
-        console.log(model);
-        },
+          } else {
+              console.log(this.addForm);
+            this.$http
+              .put("/EditUser",this.addForm)
+              .then(response => {
+                this.dialogFormVisible = false;
+                this.$refs.addForm.resetFields();
+                this.getUsers();
+              });
+          }
+    },
+
         delClick(row:any){
         this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
           confirmButtonText: '确定',
