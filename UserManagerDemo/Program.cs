@@ -25,8 +25,8 @@ namespace WFKS.Check.Search
                     });
                     x.RunAsLocalSystem();
 
-                    x.SetServiceName("UserManager");
-                    x.SetDisplayName("UserManager服务");
+                    x.SetServiceName("UserManagerDemo");
+                    x.SetDisplayName("UserManagerDemo服务");
                 });
 
                 var exitCode = (int)Convert.ChangeType(rc, rc.GetTypeCode());
