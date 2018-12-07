@@ -1,7 +1,8 @@
-﻿using EntityFramework.Extensions;
-using Swashbuckle.Swagger.Annotations;
+﻿using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web.Http;
 using WFKS.Check.Search.Models;
@@ -74,23 +75,29 @@ namespace WFKS.Check.Search.Controllers
         [SwaggerResponse(statusCode: 200, type: typeof(int))]
         public int EditUser([FromBody]User user)
         {
-            using (var context = new UserContext())
+
+            try
             {
-                try
+                using (var context = new UserContext())
                 {
-                    int count = context.User.Where(u => u.Id == user.Id).Update(u => new User
+                    User updateuser = context.User.FirstOrDefault(u => u.Id == user.Id);
+                    if (updateuser != null)
                     {
-                        realName = user.realName,
-                        userName = user.userName,
-                        hours = user.hours
-                    });
-                    return count;
+                        updateuser.realName = user.realName;
+                        updateuser.userName = user.userName;
+                        updateuser.hours = user.hours;
+                        return context.SaveChanges();
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    log.Error("EditUser出错", ex);
-                    throw;
-                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("EditUser出错", ex);
+                throw;
             }
         }
     }
