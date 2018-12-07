@@ -21,8 +21,8 @@
       label="操作"
       width="100">
       <template slot-scope="scope">
-        <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-        <el-button type="text" size="small">编辑</el-button>
+        <el-button @click="editClick(scope.row)" type="text" size="small">编辑</el-button>
+        <el-button @click="delClick(scope.row)" type="text" size="small">删除</el-button>
       </template>
     </el-table-column>
       </el-table>
@@ -50,6 +50,7 @@
 import { Component, Vue } from "vue-property-decorator";
 export default Vue.extend({
     name:"user",
+    //定义数据模型
     data(){
         return{
             users:[],
@@ -62,9 +63,11 @@ export default Vue.extend({
             }
         }
     },
+    //在模板渲染成html后调用，通常是初始化页面完成后，再对html的dom节点进行一些需要的操作。
     mounted(){
     this.getUsers();
     },
+    //方法，相当于function
     methods:{
         getUsers(){
             this.$http.get("/GetUsers").then((response: any) => {
@@ -94,8 +97,45 @@ export default Vue.extend({
                 console.log(error.config);
             });
         },
-        handleClick(model:any){
+        editClick(model:any){
         console.log(model);
+        },
+        delClick(row:any){
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.confirmDel(row);
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
+        confirmDel(row:any){
+            console.log(row.id);
+        this.$http
+            .delete("/DelUser?userId="+row.id)
+            .then((response:any)=>{
+                this.$message({
+                type: "success",
+                message: "删除成功"
+                    });
+              this.getUsers();
+            }).catch((error:any)=>{
+                if(error.response){
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }else if(error.request){
+                    console.log(error.request);
+                }else{
+                    console.log("Error", error.message);
+                }
+                console.log(error.config);
+            });
         }
     }
 })

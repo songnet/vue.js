@@ -21,5 +21,10 @@
         /// 
         /// </summary>
         public string hours { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int IsDelete { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace WFKS.Check.Search.Controllers
             {
                 try
                 {
-                    var list = context.User.ToList();
+                    var list = context.User.Where(u => u.IsDelete == 0).ToList();
                     return list;
                 }
                 catch (Exception ex)
@@ -97,6 +97,39 @@ namespace WFKS.Check.Search.Controllers
             catch (Exception ex)
             {
                 log.Error("EditUser出错", ex);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete, Route("DelUser")]
+        [SwaggerOperation(operationId: "DelUser")]
+        [SwaggerResponse(statusCode: 200, type: typeof(int))]
+        public int DelUser(int userId)
+        {
+
+            try
+            {
+                using (var context = new UserContext())
+                {
+                    User updateuser = context.User.FirstOrDefault(u => u.Id == userId);
+                    if (updateuser != null)
+                    {
+                        updateuser.IsDelete = 1;
+                        return context.SaveChanges();
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Error("DelUser", ex);
                 throw;
             }
         }
